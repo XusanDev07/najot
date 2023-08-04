@@ -69,3 +69,5 @@ wrapt==1.15.0
 yarl==1.9.2
 yt-dlp==2023.6.22
 ytmusicapi==0.24.1
+django-cors-headers==3.13.0
+whitenoise==6.2.0
