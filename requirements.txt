@@ -29,7 +29,7 @@ jaconv==0.3.4
 magic-filter==1.0.9
 markdown-it-py==3.0.0
 mdurl==0.1.2
-methodism==0.1.5
+methodism==0.1.8
 multidict==6.0.4
 mutagen==1.46.0
 packaging==23.1
