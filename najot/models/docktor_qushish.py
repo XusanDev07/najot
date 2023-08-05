@@ -119,9 +119,12 @@ class DocReating(models.Model):
 class Price(models.Model):
     doc = models.ForeignKey(Doktor, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-
     price = models.CharField("Narxi", max_length=128, default="50 000 UZS")
     pr = models.IntegerField(editable=False, null=True, blank=True)
+    
+    class Meta:
+        verbose_name = "Narx"
+        verbose_name_plural = "7. Narlar"
 
     def save(self, *args, **kwargs):
         self.pr = int(self.price.replace(" ", "").replace("UZS", ""))
