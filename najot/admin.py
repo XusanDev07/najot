@@ -1,5 +1,6 @@
 from django.contrib import admin
-from najot.models.docktor_qushish import Doktor, Price, Position, DocTime, Professions, Clink, Xizmatlar
+from najot.models.docktor_qushish import Doktor, Price, Position, DocTime, Professions, Clink
+from najot.models.xizmatlar import Xizmatlar
 
 
 admin.site.register(Doktor)
