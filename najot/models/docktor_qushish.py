@@ -6,8 +6,8 @@ class Professions(models.Model):
     name = models.CharField(max_length=256)
 
     class Meta:
-    verbose_name = "Yonalishi"
-    verbose_name_plural = "3. Yonalishlar"
+        verbose_name = "Yonalishi"
+        verbose_name_plural = "3. Yonalishlar"
     
     def __str__(self):
         return self.name
@@ -19,8 +19,8 @@ class Clink(models.Model):
     img = models.ImageField("Clinka rasmi", upload_to="clink", null=True, blank=True)
 
     class Meta:
-    verbose_name = "Clinika"
-    verbose_name_plural = "2. Clinikalar"
+        verbose_name = "Clinika"
+        verbose_name_plural = "2. Clinikalar"
     
     def __str__(self):
         return self.name
@@ -29,8 +29,8 @@ class Position(models.Model):
     name = models.CharField("Ism", max_length=128)
 
     class Meta:
-    verbose_name = "Lavozm"
-    verbose_name_plural = "4. Lavozmlar"
+        verbose_name = "Lavozm"
+        verbose_name_plural = "4. Lavozmlar"
     
     def __str__(self):
         return self.name
@@ -63,8 +63,8 @@ class DocTime(models.Model):
     free = models.BooleanField(default=True)
 
     class Meta:
-    verbose_name = "Doktor Time"
-    verbose_name_plural = "5. Doktorlar Vaqti"
+        verbose_name = "Doktor Time"
+        verbose_name_plural = "5. Doktorlar Vaqti"
     
     def __str__(self):
         return f'{self.doc} || {self.free}'
@@ -76,8 +76,8 @@ class Service(models.Model):
     icon = models.ImageField(upload_to="service")
 
     class Meta:
-    verbose_name = "Service"
-    verbose_name_plural = "6. Servislar"
+        verbose_name = "Service"
+        verbose_name_plural = "6. Servislar"
     
     def __str__(self):
         return self.name
