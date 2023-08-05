@@ -11,6 +11,8 @@ class Clink(models.Model):
     info = models.TextField()
     img = models.ImageField("Clinka rasmi", upload_to="clink", null=True, blank=True)
 
+    def __str__(self):
+        return self.name
 
 class Position(models.Model):
     name = models.CharField(max_length=128)
