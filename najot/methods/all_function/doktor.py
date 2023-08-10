@@ -1,7 +1,7 @@
 import json
 
 from methodism import custom_response, exception_data
-from najot.models.docktor_qushish import Doktor, Professions, Position, Clink
+from najot.models.docktor_qushish import Doktor, Professions, Position, Clink, DocTime
 from najot.serializer.all import DocSerializer
 
 
@@ -73,10 +73,30 @@ def doc_id(request, params):
             "doc_name": doc.name,
             "doc_familya": doc.familya,
             "doc_phone": doc.phone,
-            "doc_img": doc.img if doc.img else "",
+            "doc_img": doc.img.url if doc.img.url else "",
             "doc_prof": doc.prof.name,
             "doc_position": doc.position.name,
-            "doc_info": doc.info,
+            "doc_info_uz": doc.info_uz,
+            "doc_info_ru": doc.info_ru,
+            "doc_info_en": doc.info_en,
             "doc_email": doc.email,
             "doc_gender": doc.gender
         }
+
+
+def doctime_id(request, params):
+    if params['pk']:
+        doctime = DocTime.objects.filter(doc=params['pk']).first()
+        return {
+            "doktor_kuni": doctime.date,
+            "doctor_vaqti": doctime.time,
+            "dockor_ismi": doctime.doc.name
+        }
+
+
+def all_doc(request, params):
+    return {
+        "result": [i.doc_format() for i in Doktor.objects.all()]
+    }
+
+
