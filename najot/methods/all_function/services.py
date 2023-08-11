@@ -15,6 +15,6 @@ def services_id(request, params):
 
 def all_services(request, params):
     return {
-        "result": [i.services_format() for i in Contact.objects.all()]
+        "result": [i.services_format() for i in Service.objects.all()]
     }
     
