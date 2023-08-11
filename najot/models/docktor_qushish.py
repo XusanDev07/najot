@@ -84,8 +84,21 @@ class Service(models.Model):
     desktraptoin_ru = models.TextField()
     desktraptoin_en = models.TextField()
 
+    def contact_format(self):
+    return {
+        "id": self.id,
+        "name_uz": self.name_uz,
+        "name_ru": self.name_ru,
+        "name_en": self.name_en,
+        "info_uz": self.info_uz,
+        "info_ru": self.info_ru,
+        "info_en": self.info_en,
+        "svg": self.svg,
+    }
+    
     def __str__(self):
         return self.name_uz
+        
 
 
 class DocReating(models.Model):
