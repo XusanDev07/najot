@@ -3,7 +3,7 @@ from najot.methods.all_function.doktor import doc_list, doc_add, doc_delete, pro
     get_clink, doctime_id, all_doc
 from najot.methods.all_function.contact import all_contact
 from najot.methods.all_function.price import price_in_doctor
-from najot.methods.all_function.services import services_id
+from najot.methods.all_function.services import services_id, all_services
 
 ununsable_variable = dir()
 
