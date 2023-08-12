@@ -28,9 +28,6 @@ def price_in_doctor(request, params):
             "error": "Doktor yoki Price topilmadi"
         }
 
-    print(d)
-    print(a)
-
     return {
         "doktor_name": a.doc.name,
         "doktor_familya": a.doc.familya,
@@ -48,4 +45,5 @@ def price_in_doctor(request, params):
         "des_uz": a.doc.info_uz,
         "des_ru": a.doc.info_ru,
         "des_en": a.doc.info_en,
+        "gender_bobo": a.doc.gender
     }
