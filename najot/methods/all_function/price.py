@@ -2,7 +2,7 @@ from najot.models import Price
 
 
 def price_in_doctor(request, params):
-    a = Price.objects.filter(doc_id=params["doktor_id"])
+    a = Price.objects.filter(doc.doc_id=params["doktor_id"])
     return {
         "doktor_name": a.doc.name,
         "doktor_familya": a.doc.familya,
