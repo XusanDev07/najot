@@ -1,14 +1,35 @@
 from najot.models import Price, Doktor
 
+
 def price_in_doctor(request, params):
-    a = Price.objects.filter(doc_id=params["doktor_id"]).first()
-    
-    if a is None:
-        return None
-    
-    doktor_id = params["doktor_id"]
-    doktr_id = a.doc_id
-    doktr = Doktor.objects.get(id=doktr_id)
+    # a = Price.objects.filter(doc_id=params["doktor_id"]).first()
+    #
+    # if a is None:
+    #     return None
+    #
+    # doktor_id = params["doktor_id"]
+    # doktr_id = a.doc_id
+    # doktr = Doktor.objects.get(id=doktr_id)
+
+    if "doktor_id" not in params:
+        return {
+            "error": "doktor_id paramsda bolishi kerak"
+        }
+    try:
+        d = Doktor.objects.filter(id=params["doktor_id"]).first()
+        a = Price.objects.filter(doc=d).first()
+    except:
+        return {
+            "error": "Doktor yoki Price topilmadi"
+        }
+
+    if a is None or not a:
+        return {
+            "error": "Doktor yoki Price topilmadi"
+        }
+
+    print(d)
+    print(a)
 
     return {
         "doktor_name": a.doc.name,
