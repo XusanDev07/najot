@@ -7,7 +7,7 @@ def price_in_doctor(request, params):
     except Price.DoesNotExist:
         return None
     doktor_id = params["doktor_id"]
-    doktr_id = a.doc_id
+    doktr_id = a.doc.id
     doktr = Doktor.objects.get(id=doktr_id)
 
     return {
