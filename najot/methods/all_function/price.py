@@ -1,11 +1,14 @@
-from najot.models import Price
+from najot.models import Price, Doktor
 
 
 def price_in_doctor(request, params):
-    a = Price.objects.filter(doc=params['doktor_id']).first()
+    b = Doktor.objects.filter(id=params['doktor_id']).first()
+    a = Price.objects.get(doc=b)
     return {
         "doktor_name": a.doc.name,
+        "doktor_familya": a.doc.familya,
         "doktor_phone": a.doc.phone,
+        "doc_img": a.doc.img.url if a.doc.img.url else "",
         "xizmat_turi_uz": a.service.name_uz,
         "xizmat_turi_ru": a.service.name_ru,
         "xizmat_turi_en": a.service.name_en,
