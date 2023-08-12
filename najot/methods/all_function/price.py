@@ -2,11 +2,11 @@ from najot.models import Price, Doktor
 
 
 def price_in_doctor(request, params):
-    a = Price.objects.filter(doc_id=params["doktor_id"]).first()
+    try:
+        a = Price.objects.filter(doc_id=params["doktor_id"]).first()
+    except Price.DoesNotExist:
+        return None
     doktor_id = params["doktor_id"]
-        
-    a = Price.objects.get(doc_id=doktor_id)
-    
     doktr_id = a.doc_id
     doktr = Doktor.objects.get(id=doktr_id)
 
