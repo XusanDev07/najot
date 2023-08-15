@@ -1,12 +1,6 @@
 from django.db import models
 from najot.models import User
-
-
-class Professions(models.Model):
-    name = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.name
+from najot.models.services import Service
 
 
 class Clink(models.Model):
@@ -18,21 +12,13 @@ class Clink(models.Model):
         return self.name
 
 
-class Position(models.Model):
-    name = models.CharField(max_length=128)
-
-    def __str__(self):
-        return self.name
-
-
 class Doktor(models.Model):
     name = models.CharField("Ism", max_length=128)
     familya = models.CharField("Familya", max_length=128)
     phone = models.CharField("Telefon raqam", max_length=20)
     img = models.ImageField("Rasm", upload_to="docs", null=True, blank=True)
     xona_raqami = models.SmallIntegerField(default=1)
-    prof = models.ForeignKey(Professions, verbose_name="Shifokor Mutahasisligi", on_delete=models.SET_NULL, null=True)
-    position = models.ForeignKey(Position, verbose_name="Shifokor lavozimi", on_delete=models.SET_NULL, null=True)
+    services = models.ForeignKey(Service, on_delete=models.SET_NULL, null=True, blank=True)
     info_uz = models.TextField("Shifokor haqida qisqacha malumot")
     tajriba = models.SmallIntegerField()
     info_ru = models.TextField("Краткая информация о докторе")
@@ -49,7 +35,7 @@ class Doktor(models.Model):
             "doc_id": self.id,
             "doc_img": self.img.url if self.img.url else "",
             "doktor_name": self.name,
-            "doktor_kasb": self.prof.name,
+            "doc_services": self.services.name_uz,
             "doc_info_uz": self.info_uz,
             "doc_info_ru": self.info_ru,
             "doc_info_en": self.info_en,
@@ -68,36 +54,6 @@ class DocTime(models.Model):
 
     def __str__(self):
         return f'{self.date}: {self.doc.name}'
-
-
-class Service(models.Model):
-    name_uz = models.CharField(max_length=128)
-    name_ru = models.CharField(max_length=128)
-    name_en = models.CharField(max_length=128)
-    info_uz = models.TextField()
-    info_ru = models.TextField()
-    info_en = models.TextField()
-    svg = models.CharField(max_length=10000)
-    img = models.FileField(upload_to="services")
-    doktor = models.ForeignKey(Doktor, on_delete=models.CASCADE)
-    desktraptoin_uz = models.TextField()
-    desktraptoin_ru = models.TextField()
-    desktraptoin_en = models.TextField()
-
-    def __str__(self):
-        return self.name_uz
-
-    def services_format(self):
-        return {
-            "id": self.id,
-            "name_uz": self.name_uz,
-            "name_ru": self.name_ru,
-            "name_en": self.name_en,
-            "info_uz": self.info_uz,
-            "info_ru": self.info_ru,
-            "info_en": self.info_en,
-            "svg": self.svg,
-        }
 
 
 class DocReating(models.Model):

@@ -1,7 +1,5 @@
-import json
-
 from methodism import custom_response, exception_data
-from najot.models.docktor_qushish import Doktor, Professions, Position, Clink, DocTime
+from najot.models.docktor_qushish import Doktor, Clink, DocTime
 from najot.serializer.all import DocSerializer
 
 
