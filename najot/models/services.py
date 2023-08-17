@@ -10,7 +10,7 @@ class Service(models.Model):
     info_en = models.TextField()
     svg = models.CharField(max_length=10000)
     img = models.FileField(upload_to="services")
-
+    price = models.CharField("Narxi", max_length=128, default="50 000 UZS")
     desktraptoin_uz = models.TextField()
     desktraptoin_ru = models.TextField()
     desktraptoin_en = models.TextField()

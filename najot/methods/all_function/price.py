@@ -1,17 +1,21 @@
-from najot.models import Price, Doktor
+from najot.models import Price, Doktor, User
 
 
 def price_in_doctor(request, params):
     doc = params['doc_id']
-    a = Price.objects.filter(price_doc_id=doc).first()
-
+    start = params['start']
+    try:
+        created_by = User.objects.get(id=request.user.id).first()
+        a = Price.objects.create(price_doc_id=doc, start=start, created_by=created_by)
+    except:
+        return custom_response(status=False, message="Qandaydir xatolik yuz berdi malumotlar topilmadi")
     # if a is None:
     #     return {
     #         'error': "Bunday doktorga oid narx mavjud emas."
     #     }
 
     return {
-        'id': a.price_doc.id
+        "Success"
 
     }
 

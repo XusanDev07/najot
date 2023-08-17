@@ -1,6 +1,7 @@
 from django.db import models
 from najot.models import User
 from najot.models.services import Service
+from datetime import datetime, timedelta
 
 
 class Clink(models.Model):
@@ -30,8 +31,14 @@ class Doktor(models.Model):
     tajriba = models.SmallIntegerField()
     info_ru = models.TextField("Краткая информация о докторе")
     info_en = models.TextField("Brief information about the doctor")
-    email = models.EmailField("Elektron pochta")
     gender = models.BooleanField("Jinsi", default=True)
+    email = models.EmailField("Elektron pochta")
+    dushanba = models.BooleanField("dushanba", default=True)
+    seshanba = models.BooleanField("seshanba", default=True)
+    chorshanba = models.BooleanField("chorshanba", default=True)
+    payshanba = models.BooleanField("payshanba", default=True)
+    juma = models.BooleanField("juma", default=True)
+    is_active = models.BooleanField(default=True)
 
     def doc_format(self):
         return {
@@ -42,11 +49,16 @@ class Doktor(models.Model):
             "doc_info_uz": self.info_uz,
             "doc_info_ru": self.info_ru,
             "doc_info_en": self.info_en,
-            "doc_phone": self.phone
+            "doc_phone": self.phone,
+            "dushanba": self.dushanba,
+            "seshanba": self.seshanba,
+            "chorshanba": self.chorshanba,
+            "payshanba": self.payshanba,
+            "juma": self.juma,
         }
 
     def __str__(self):
-        return f"{self.id}"
+        return f"{self.name}"
 
 
 class DocTime(models.Model):
@@ -75,17 +87,49 @@ class DocReating(models.Model):
 
 class Price(models.Model):
     price_doc = models.ForeignKey(Doktor, on_delete=models.CASCADE)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
-
-    price = models.CharField("Narxi", max_length=128, default="50 000 UZS")
-    pr = models.IntegerField(editable=False, null=True, blank=True)
-
+    start = models.TimeField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.BooleanField(default=False)
+    
+    
     def save(self, *args, **kwargs):
-        self.pr = int(self.price.replace(" ", "").replace("UZS", ""))
-        for i in ["uzs", "usd", "$", "rub"]:
-            self.pr = str(self.pr).replace(i, "")
-        self.pr = int(self.pr)
-        return super(Price, self).save(*args, **kwargs)
+        current_time = datetime.now().time()
+        end = (datetime.combine(datetime.now().date(), self.start) + timedelta(hours=1)).time()
+        
+        if self.start <= current_time <= end:
+            self.status = False
+        elif self.start <= current_time >= end:
+            self.status = True
+        
+
+        doktor = Doktor.objects.get(id=self.price_doc_id)
+        doktor.is_active = False
+        doktor.save()
+
+        super(Price, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.price} | {self.doc.name}"
+        return self.price_doc.name
+
+
+
+    # def save(self, *args, **kwargs):
+    #     current_time = datetime.now().time()
+        # bu kod ishlaydi faqat modellarga end degan timefield qo'shish kerak
+    #     if self.start <= current_time <= self.end:
+    #         self.status = False
+    #     else:
+    #         current_datetime = datetime.combine(datetime.now().date(), current_time)
+    #         price_start_datetime = datetime.combine(datetime.now().date(), self.start)
+    #         price_end_datetime = datetime.combine(datetime.now().date(), self.end)
+            
+    #         if (price_end_datetime - price_start_datetime) <= (current_datetime - price_start_datetime):
+    #             self.status = True
+    #         if current_time >= self.start and current_time <= self.end:
+    #             self.status = False
+         
+        
+    #     super(Price, self).save(*args, **kwargs)
+
+    # def __str__(self):
+    #     return f"{self.price} | {self.price_doc.name}"
