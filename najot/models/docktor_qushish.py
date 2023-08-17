@@ -8,6 +8,13 @@ class Clink(models.Model):
     info = models.TextField()
     img = models.ImageField("Clinka rasmi", upload_to="clink", null=True, blank=True)
 
+    def clink_format(self):
+        return {
+            "name": self.name,
+            "info": self.info,
+            "img": f"{self.img.url}"
+        }
+
     def __str__(self):
         return self.name
 
@@ -26,10 +33,6 @@ class Doktor(models.Model):
     email = models.EmailField("Elektron pochta")
     gender = models.BooleanField("Jinsi", default=True)
 
-    class Meta:
-        verbose_name = "Doktor"
-        verbose_name_plural = "1. Doktorlar"
-
     def doc_format(self):
         return {
             "doc_id": self.id,
@@ -43,7 +46,7 @@ class Doktor(models.Model):
         }
 
     def __str__(self):
-        return f"{self.familya} {self.name}"
+        return f"{self.id}"
 
 
 class DocTime(models.Model):
@@ -71,7 +74,7 @@ class DocReating(models.Model):
 
 
 class Price(models.Model):
-    doc = models.ForeignKey(Doktor, on_delete=models.CASCADE)
+    price_doc = models.ForeignKey(Doktor, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
 
     price = models.CharField("Narxi", max_length=128, default="50 000 UZS")

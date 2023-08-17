@@ -13,26 +13,8 @@ def clink(request, params):
 
 def get_clink(request, params):
     return {
-        "clink": [[
-            x.name,
-            x.info,
-            x.img.url
-        ] for x in Clink.objects.all()]
+        "result": [i.clink_format() for i in Clink.objects.all()]
     }
-
-
-def professions(request, params):
-    prof = Professions.objects.get(name=params['name'])
-    Professions.objects.get_or_create(params['name'])
-    return custom_response(status=True, message="Succes")
-
-
-def position(request, params):
-    prof = Position.objects.filter(name=params['name']).first()
-    if prof:
-        return custom_response(status=False, message={"Bunday lavozim bor"})
-    Position.objects.create(name=params['name'])
-    return custom_response(status=True, message="Succes")
 
 
 def doc_list(request, params):
@@ -72,8 +54,7 @@ def doc_id(request, params):
             "doc_familya": doc.familya,
             "doc_phone": doc.phone,
             "doc_img": doc.img.url if doc.img.url else "",
-            "doc_prof": doc.prof.name,
-            "doc_position": doc.position.name,
+            "doc_prof": doc.services.name_uz,
             "doc_info_uz": doc.info_uz,
             "doc_info_ru": doc.info_ru,
             "doc_info_en": doc.info_en,

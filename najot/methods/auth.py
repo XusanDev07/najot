@@ -2,39 +2,28 @@ import datetime, re, random, string, uuid
 from methodism import custom_response, error_params_unfilled, MESSAGE, error_msg_unfilled, generate_key, code_decoder, \
     exception_data
 from rest_framework.authtoken.models import Token
-# from base.server import check_phone_in_db, check_token_in_db, update_token
-# from base.sen_phone import send_phone
-from najot.models.auth import User, OTP
+from najot.models.auth import User
 
 
 def regis(requests, params):
-    all_info = next((field for field in [
-        'username', 'last_name', 'age', 'phone', 'token', 'password'
-    ] if field not in params), '')
+    need = ['username', 'last_name', 'age', 'phone', 'password', 'email']
+    for x in need:
+        if x not in params.keys():
+            return custom_response(status=False, message=error_params_unfilled(x))
 
-    if all_info:
-        return custom_response(status=False, message=f"{all_info.capitalize()} parametrlari to'ldirilmagan")
-
-    otp = OTP.objects.filter(key=params['token']).first()
-
-    if not otp:
-        return custom_response(False, {"Error": "Xato token !"})
-
-    if otp.is_conf:
-        return custom_response(False, {"Error": "Token eskirgan!"})
-
-    user = User.objects.filter(phone=otp.phone).first()
+    user = User.objects.filter(phone=params['phone']).first()
 
     if user:
         return custom_response(False, {"Error": "Bu user band qilingan"})
-    if len(params['password']) < 8 or params['password'].isalnum() or " " in params['password']:
+    if len(params['password']) < 8 or " " in params['password']:
         return custom_response(False, {
             "Error": "Parol 8ta belgi harf raqamdan iborat bo'lishi kerak"})
 
     user_data = {
         "password": params['password'],
         "username": params['username'],
-        "phone": params.get('phone', ''),
+        "email": params['email'],
+        "phone": params.get('phone', '')
     }
 
     if params.get('key', None):
@@ -44,9 +33,10 @@ def regis(requests, params):
         })
 
     userr = User.objects.create_user(**user_data)
-    token = Token.objects.create(user=userr)
-    return custom_response(False, {
-        "Success": "Account yaratildi",
+
+    token = Token.objects.get_or_create(user=userr)[0]
+
+    return custom_response(status=True, message={
         "Token": token.key
     })
 
@@ -98,7 +88,7 @@ def user_update(request, params):
         return custom_response(True, message={"Error": "Bunaqa user band qilingan"})
 
     request.user.phone = params.get('phone', request.user.phone)
-    request.user.username = params.get('username', request.user.phone)
+    request.user.username = params.get('username', request.user.username)
     # request.user.phone = params.get('phone', request.user.phone)
     request.user.last_name = params.get('last_name', request.user.last_name)
     request.user.save()

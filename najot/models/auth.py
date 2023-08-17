@@ -25,9 +25,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=128)
     password = models.CharField(max_length=128)
 
-    groups = models.ManyToManyField('auth.Group', related_name='custom_users_groups')
-    user_permissions = models.ManyToManyField('auth.Permission', related_name='custom_users_permissions')
-
     status = models.BooleanField(default=True)
 
     is_superuser = models.BooleanField(default=True)
@@ -36,7 +33,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomerUserManager()
 
-    USERNAME_FIELD = 'phone'
+    USERNAME_FIELD = 'username'
+
+    def __str__(self):
+        return f"{self.username}"
 
 
 class OTP(models.Model):
