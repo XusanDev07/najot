@@ -38,7 +38,7 @@ class Doktor(models.Model):
     chorshanba = models.BooleanField("chorshanba", default=True)
     payshanba = models.BooleanField("payshanba", default=True)
     juma = models.BooleanField("juma", default=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, editable=False)
 
     def doc_format(self):
         return {
@@ -90,20 +90,24 @@ class Price(models.Model):
     start = models.TimeField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
-    
-    
+
     def save(self, *args, **kwargs):
+        doktor = Doktor.objects.get(id=self.price_doc_id)
+
         current_time = datetime.now().time()
         end = (datetime.combine(datetime.now().date(), self.start) + timedelta(hours=1)).time()
-        
-        if self.start <= current_time <= end:
-            self.status = False
-        elif self.start <= current_time >= end:
-            self.status = True
-        
 
-        doktor = Doktor.objects.get(id=self.price_doc_id)
-        doktor.is_active = False
+        # print(end)
+        # print(type(self.start))
+        # print(current_time)
+
+        if end <= current_time or self.start <= current_time >= end:
+            self.status = True
+            doktor.is_active = True
+        elif end >= current_time or self.start <= current_time <= end:
+            self.status = False
+
+            doktor.is_active = False
         doktor.save()
 
         super(Price, self).save(*args, **kwargs)
@@ -111,24 +115,21 @@ class Price(models.Model):
     def __str__(self):
         return self.price_doc.name
 
-
-
     # def save(self, *args, **kwargs):
     #     current_time = datetime.now().time()
-        # bu kod ishlaydi faqat modellarga end degan timefield qo'shish kerak
+    # bu kod ishlaydi faqat modellarga end degan timefield qo'shish kerak
     #     if self.start <= current_time <= self.end:
     #         self.status = False
     #     else:
     #         current_datetime = datetime.combine(datetime.now().date(), current_time)
     #         price_start_datetime = datetime.combine(datetime.now().date(), self.start)
     #         price_end_datetime = datetime.combine(datetime.now().date(), self.end)
-            
+
     #         if (price_end_datetime - price_start_datetime) <= (current_datetime - price_start_datetime):
     #             self.status = True
     #         if current_time >= self.start and current_time <= self.end:
     #             self.status = False
-         
-        
+
     #     super(Price, self).save(*args, **kwargs)
 
     # def __str__(self):

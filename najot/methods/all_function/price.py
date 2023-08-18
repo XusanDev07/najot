@@ -1,14 +1,17 @@
+from datetime import datetime
+from methodism import custom_response
 from najot.models import Price, Doktor, User
 
 
 def price_in_doctor(request, params):
     doc = params['doc_id']
-    start = params['start']
-    try:
-        created_by = User.objects.get(id=request.user.id).first()
-        a = Price.objects.create(price_doc_id=doc, start=start, created_by=created_by)
-    except:
-        return custom_response(status=False, message="Qandaydir xatolik yuz berdi malumotlar topilmadi")
+    start = str(params['start'])
+    # created_by = User.objects.filter(id=request.user.id).first()
+    if doc is not None and start:
+        start = datetime.strptime(start, '%H:%M:%S').time()
+        created_by = User.objects.filter(id=params['user_id']).first()
+        Price.objects.create(price_doc_id=doc, start=start, created_by=created_by)
+
     # if a is None:
     #     return {
     #         'error': "Bunday doktorga oid narx mavjud emas."
@@ -16,7 +19,6 @@ def price_in_doctor(request, params):
 
     return {
         "Success"
-
     }
 
     # if "doktor_id" not in params:

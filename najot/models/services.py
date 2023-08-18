@@ -28,4 +28,5 @@ class Service(models.Model):
             "info_ru": self.info_ru,
             "info_en": self.info_en,
             "svg": self.svg,
+            'narxi': self.price
         }
