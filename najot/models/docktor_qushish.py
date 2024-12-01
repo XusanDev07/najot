@@ -17,6 +17,8 @@ class Clink(models.Model):
     name = models.CharField(max_length=128)
     info = models.TextField()
     img = models.ImageField("Clinka rasmi", upload_to="clink", null=True, blank=True)
+    def __str__(self):
+        return self.name
 
     class Meta:
         verbose_name = "Clinika"
@@ -35,22 +37,40 @@ class Position(models.Model):
     def __str__(self):
         return self.name
 
+    def __str__(self):
+        return self.name
+
 
 class Doktor(models.Model):
     name = models.CharField("Ism", max_length=128)
     familya = models.CharField("Familya", max_length=128)
     phone = models.CharField("Telefon raqam", max_length=20)
     img = models.ImageField("Rasm", upload_to="docs", null=True, blank=True)
-
+    xona_raqami = models.SmallIntegerField(default=1)
     prof = models.ForeignKey(Professions, verbose_name="Shifokor Mutahasisligi", on_delete=models.SET_NULL, null=True)
     position = models.ForeignKey(Position, verbose_name="Shifokor lavozimi", on_delete=models.SET_NULL, null=True)
-    info = models.TextField("Shifokor haqida qisqacha malumot")
+    info_uz = models.TextField("Shifokor haqida qisqacha malumot")
+    tajriba = models.SmallIntegerField()
+    info_ru = models.TextField("Краткая информация о докторе")
+    info_en = models.TextField("Brief information about the doctor")
     email = models.EmailField("Elektron pochta")
     gender = models.BooleanField("Jinsi", default=True)
 
     class Meta:
         verbose_name = "Doktor"
         verbose_name_plural = "1. Doktorlar"
+
+    def doc_format(self):
+        return {
+            "doc_id": self.id,
+            "doc_img": self.img.url if self.img.url else "",
+            "doktor_name": self.name,
+            "doktor_kasb": self.prof.name,
+            "doc_info_uz": self.info_uz,
+            "doc_info_ru": self.info_ru,
+            "doc_info_en": self.info_en,
+            "doc_phone": self.phone
+        }
 
     def __str__(self):
         return f"{self.familya} {self.name}"
@@ -62,6 +82,8 @@ class DocTime(models.Model):
     doc = models.ForeignKey(Doktor, on_delete=models.CASCADE)
     free = models.BooleanField(default=True)
 
+    def __str__(self):
+        return f'{self.date}: {self.doc.name}'
     class Meta:
         verbose_name = "Doktor Time"
         verbose_name_plural = "5. Doktorlar Vaqti"
@@ -71,9 +93,34 @@ class DocTime(models.Model):
 
 
 class Service(models.Model):
-    name = models.CharField(max_length=128)
-    info = models.TextField()
-    icon = models.ImageField(upload_to="service")
+    name_uz = models.CharField(max_length=128)
+    name_ru = models.CharField(max_length=128)
+    name_en = models.CharField(max_length=128)
+    info_uz = models.TextField()
+    info_ru = models.TextField()
+    info_en = models.TextField()
+    svg = models.CharField(max_length=10000)
+    img = models.FileField(upload_to="services")
+    doktor = models.ForeignKey(Doktor, on_delete=models.CASCADE)
+    desktraptoin_uz = models.TextField()
+    desktraptoin_ru = models.TextField()
+    desktraptoin_en = models.TextField()
+
+    def contact_format(self):
+    return {
+        "id": self.id,
+        "name_uz": self.name_uz,
+        "name_ru": self.name_ru,
+        "name_en": self.name_en,
+        "info_uz": self.info_uz,
+        "info_ru": self.info_ru,
+        "info_en": self.info_en,
+        "svg": self.svg,
+    }
+    
+    def __str__(self):
+        return self.name_uz
+        
 
     class Meta:
         verbose_name = "Service"
@@ -96,10 +143,6 @@ class Service(models.Model):
 #     feed = models.TextField()
 
 
-# class Price(models.Model):
-#     doc = models.ForeignKey(Doktor, on_delete=models.CASCADE)
-#     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-#     icon = models.ImageField(upload_to="service")
 
 
 class DocReating(models.Model):
@@ -119,6 +162,7 @@ class DocReating(models.Model):
 class Price(models.Model):
     doc = models.ForeignKey(Doktor, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
+
     price = models.CharField("Narxi", max_length=128, default="50 000 UZS")
     pr = models.IntegerField(editable=False, null=True, blank=True)
     
@@ -129,10 +173,11 @@ class Price(models.Model):
     def save(self, *args, **kwargs):
         self.pr = int(self.price.replace(" ", "").replace("UZS", ""))
         for i in ["uzs", "usd", "$", "rub"]:
-            pr = pr.lower().replace(i, "")
-        self.pr = int(pr)
+            self.pr = str(self.pr).replace(i, "")
+        self.pr = int(self.pr)
         return super(Price, self).save(*args, **kwargs)
 
     def __str__(self):
+        return f"{self.price} | {self.doc.name}"
         return f'{self.doc} || {self.service} || {self.price}'
     

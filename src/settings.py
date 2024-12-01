@@ -110,7 +110,7 @@ WSGI_APPLICATION = 'src.wsgi.application'
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': BASE_DIR / 'db.sqlite3',
-#
+
 #     }
 # }
 
@@ -124,7 +124,6 @@ DATABASES = {
         'PASSWORD': 'e490d22e58ed173ab1cfe8859bf5a34b3bc2c8bb945e66459dd9fdd7d78662fe'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
