@@ -5,6 +5,10 @@ from najot.models import User
 class Professions(models.Model):
     name = models.CharField(max_length=256)
 
+    class Meta:
+        verbose_name = "Yonalishi"
+        verbose_name_plural = "3. Yonalishlar"
+    
     def __str__(self):
         return self.name
 
@@ -13,13 +17,25 @@ class Clink(models.Model):
     name = models.CharField(max_length=128)
     info = models.TextField()
     img = models.ImageField("Clinka rasmi", upload_to="clink", null=True, blank=True)
-
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Clinika"
+        verbose_name_plural = "2. Clinikalar"
+    
+    def __str__(self):
+        return self.name
 
 class Position(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField("Ism", max_length=128)
+
+    class Meta:
+        verbose_name = "Lavozm"
+        verbose_name_plural = "4. Lavozmlar"
+    
+    def __str__(self):
+        return self.name
 
     def __str__(self):
         return self.name
@@ -68,6 +84,12 @@ class DocTime(models.Model):
 
     def __str__(self):
         return f'{self.date}: {self.doc.name}'
+    class Meta:
+        verbose_name = "Doktor Time"
+        verbose_name_plural = "5. Doktorlar Vaqti"
+    
+    def __str__(self):
+        return f'{self.doc} || {self.free}'
 
 
 class Service(models.Model):
@@ -100,9 +122,31 @@ class Service(models.Model):
         return self.name_uz
         
 
+    class Meta:
+        verbose_name = "Service"
+        verbose_name_plural = "6. Servislar"
+    
+    def __str__(self):
+        return self.name
+
+
+# class DocReating(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="Reating")
+#     doc = models.ForeignKey(Doktor, on_delete=models.CASCADE)
+#     star = models.SmallIntegerField(choices=[
+#         (1, "     ⭐️ "),
+#         (2, "    ⭐️⭐️ "),
+#         (3, "   ⭐️⭐️⭐️ "),
+#         (4, "  ⭐️⭐️⭐️⭐️ "),
+#         (5, " ⭐️⭐️⭐️⭐️⭐️ ")
+#     ])
+#     feed = models.TextField()
+
+
+
 
 class DocReating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="Reating")
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="DocReatinguser")
     doc = models.ForeignKey(Doktor, on_delete=models.CASCADE)
     star = models.SmallIntegerField(choices=[
         (1, "     ⭐️ "),
@@ -121,6 +165,10 @@ class Price(models.Model):
 
     price = models.CharField("Narxi", max_length=128, default="50 000 UZS")
     pr = models.IntegerField(editable=False, null=True, blank=True)
+    
+    class Meta:
+        verbose_name = "Narx"
+        verbose_name_plural = "7. Narlar"
 
     def save(self, *args, **kwargs):
         self.pr = int(self.price.replace(" ", "").replace("UZS", ""))
@@ -131,3 +179,5 @@ class Price(models.Model):
 
     def __str__(self):
         return f"{self.price} | {self.doc.name}"
+        return f'{self.doc} || {self.service} || {self.price}'
+    
